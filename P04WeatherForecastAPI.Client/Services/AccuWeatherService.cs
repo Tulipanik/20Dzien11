@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,10 +16,16 @@ namespace P04WeatherForecastAPI.Client.Services
     {
         private const string base_url = "http://dataservice.accuweather.com";
         private const string autocomplete_endpoint = "locations/v1/cities/autocomplete?apikey={0}&q={1}&language{2}";
-        private const string current_conditions_endpoint = "currentconditions/v1/{0}?apikey={1}&language{2}";
+		private const string current_conditions_endpoint = "currentconditions/v1/{0}?apikey={1}&language{2}";
+        private const string weather_alarms_endpoint = "/alarms/v1/1day/{0}?apikey={1}&language{2}";
+		private const string weather_forecast_1d_endpoint = "/forecasts/v1/daily/1day/{0}?apikey={1}&language{2}";
+		private const string weather_forecast_5d_endpoint = "/forecasts/v1/daily/5day/{0}?apikey={1}&language{2}";
+		private const string weather_forecast_1h_endpoint = "/forecasts/v1/hourly/1hour/{0}?apikey={1}&language{2}";
+		private const string weather_forecast_12h_endpoint = "/forecasts/v1/hourly/12hour/{0}?apikey={1}&language{2}";
 
-        // private const string api_key = "5hFl75dja3ZuKSLpXFxUzSc9vXdtnwG5";
-        string api_key;
+
+		// private const string api_key = "5hFl75dja3ZuKSLpXFxUzSc9vXdtnwG5";
+		string api_key;
         //private const string language = "pl";
         string language;
 
@@ -59,5 +66,53 @@ namespace P04WeatherForecastAPI.Client.Services
                 return weathers.FirstOrDefault();
             }
         }
-    }
+
+        public async Task<DailyForecast> GetForecastFor1Day(string cityKey)
+        {
+            string url = base_url + "/" + string.Format(weather_forecast_1d_endpoint, cityKey, api_key,language);
+            using ( HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                string json = await response.Content.ReadAsStringAsync();
+                DailyForecast[] dailyForecast = JsonConvert.DeserializeAnonymousType(json, new {DailyForecasts = new DailyForecast[1]}).DailyForecasts;
+                return dailyForecast.FirstOrDefault();
+            }
+        }
+
+		public async Task<DailyForecast[]> GetForecastFor5Days(string cityKey)
+		{
+			string url = base_url + "/" + string.Format(weather_forecast_5d_endpoint, cityKey, api_key, language);
+			using (HttpClient client = new HttpClient())
+			{
+				var response = await client.GetAsync(url);
+				string json = await response.Content.ReadAsStringAsync();
+				DailyForecast[] dailyForecast = JsonConvert.DeserializeAnonymousType(json, new { DailyForecasts = new DailyForecast[5] }).DailyForecasts;
+				return dailyForecast;
+			}
+		}
+
+		public async Task<HourlyForecast> GetForecastFor1Hour(string cityKey)
+		{
+			string url = base_url + "/" + string.Format(weather_forecast_1h_endpoint, cityKey, api_key, language);
+			using (HttpClient client = new HttpClient())
+			{
+				var response = await client.GetAsync(url);
+				string json = await response.Content.ReadAsStringAsync();
+				HourlyForecast[] dailyForecast = JsonConvert.DeserializeObject<HourlyForecast[]>(json);
+				return dailyForecast.FirstOrDefault();
+			}
+		}
+
+		public async Task<HourlyForecast[]> GetForecastFor12Hours(string cityKey)
+		{
+			string url = base_url + "/" + string.Format(weather_forecast_12h_endpoint, cityKey, api_key, language);
+			using (HttpClient client = new HttpClient())
+			{
+				var response = await client.GetAsync(url);
+				string json = await response.Content.ReadAsStringAsync();
+				HourlyForecast[] dailyForecast = JsonConvert.DeserializeObject<HourlyForecast[]>(json);
+				return dailyForecast;
+			}
+		}
+	}
 }

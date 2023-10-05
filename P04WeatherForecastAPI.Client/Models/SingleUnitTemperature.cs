@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace P04WeatherForecastAPI.Client.Models
 {
-    internal class Temperature
-    {
-        public Metric Metric { get; set; }
-        public Imperial Imperial { get; set; }
-        public int UnitType { get; set; }
+	internal class SingleUnitTemperature
+	{
+		public double Value { get; set; }
+		public string Unit { get; set; }
+		public int UnitType { get; set; }
 	}
 }
