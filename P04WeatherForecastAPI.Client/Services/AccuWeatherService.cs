@@ -1,13 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using P04WeatherForecastAPI.Client.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace P04WeatherForecastAPI.Client.Services
@@ -17,7 +13,6 @@ namespace P04WeatherForecastAPI.Client.Services
         private const string base_url = "http://dataservice.accuweather.com";
         private const string autocomplete_endpoint = "locations/v1/cities/autocomplete?apikey={0}&q={1}&language{2}";
 		private const string current_conditions_endpoint = "currentconditions/v1/{0}?apikey={1}&language{2}";
-        private const string weather_alarms_endpoint = "/alarms/v1/1day/{0}?apikey={1}&language{2}";
 		private const string weather_forecast_1d_endpoint = "/forecasts/v1/daily/1day/{0}?apikey={1}&language{2}";
 		private const string weather_forecast_5d_endpoint = "/forecasts/v1/daily/5day/{0}?apikey={1}&language{2}";
 		private const string weather_forecast_1h_endpoint = "/forecasts/v1/hourly/1hour/{0}?apikey={1}&language{2}";
@@ -51,7 +46,6 @@ namespace P04WeatherForecastAPI.Client.Services
                 string json = await response.Content.ReadAsStringAsync();
                 City[] cities = JsonConvert.DeserializeObject<City[]>(json);
                 return cities;
-
             }
         }
 
@@ -94,24 +88,23 @@ namespace P04WeatherForecastAPI.Client.Services
 		public async Task<HourlyForecast> GetForecastFor1Hour(string cityKey)
 		{
 			string url = base_url + "/" + string.Format(weather_forecast_1h_endpoint, cityKey, api_key, language);
-			using (HttpClient client = new HttpClient())
-			{
-				var response = await client.GetAsync(url);
-				string json = await response.Content.ReadAsStringAsync();
-				HourlyForecast[] dailyForecast = JsonConvert.DeserializeObject<HourlyForecast[]>(json);
-				return dailyForecast.FirstOrDefault();
-			}
+			return (await GetDataFromAPI<HourlyForecast>(url)).FirstOrDefault();
 		}
 
 		public async Task<HourlyForecast[]> GetForecastFor12Hours(string cityKey)
 		{
 			string url = base_url + "/" + string.Format(weather_forecast_12h_endpoint, cityKey, api_key, language);
+            return await GetDataFromAPI<HourlyForecast>(url);
+		}
+
+        private async Task<T[]> GetDataFromAPI<T>(string url)
+        {
 			using (HttpClient client = new HttpClient())
 			{
 				var response = await client.GetAsync(url);
 				string json = await response.Content.ReadAsStringAsync();
-				HourlyForecast[] dailyForecast = JsonConvert.DeserializeObject<HourlyForecast[]>(json);
-				return dailyForecast;
+				T[] data = JsonConvert.DeserializeObject<T[]>(json);
+				return data;
 			}
 		}
 	}
