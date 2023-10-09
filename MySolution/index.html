@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/css.css" />
+    <title>Weather Cast</title>
+  </head>
+  <body>
+    <script type="module" src="./renderer.js"></script>
+    <h1>Weather Cast!</h1>
+    
+    <div>
+        <form id="form">
+          <div>
+          <label for="location">Write here interesting location</label> <br> 
+          <input id="location" />
+          <input type="submit" value="szukaj">
+          </div>
+        </form>
+      <div>
+        <div>Country: <span id="country"></span></div>
+        <div>Time: <span id="time"></span></div>
+      </div>
+      <div><span id="weather_icon"></span>
+      <div>
+        Temperature: <span id="temperature"></span>
+      </div>
+      <div>Predictions:</div>
+      <table>
+        <thead id="week_days">
+        </thead>
+        <tbody id="temperatures">
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
