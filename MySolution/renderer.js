@@ -1,5 +1,7 @@
 import { APIKey } from "./api_key.js";
 const language = navigator.language;
+const URL = "http://dataservice.accuweather.com/";
+const basic = `apikey=${APIKey}&language=${language}`;
 
 const form = document.getElementById("form");
 
@@ -21,13 +23,17 @@ async function getAPIRequest(endpoint) {
 async function getLocation() {
   const location = document.getElementById("location").value;
 
-  const endpoint = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${APIKey}&q=${location}`;
+  const endpoint = `${URL}locations/v1/cities/search?${basic}&q=${location}`;
 
   await getAPIRequest(endpoint)
     .then((data) => {
       document.getElementById("country").innerHTML =
         data[0].Country.LocalizedName;
-      getDailyForecast(data[0].Key);
+      // getCurrentWeather(data[0].Key);
+      // getAirCondition(data[0].Key);
+      // getCurrentWeather(data[0].Key);
+      // getDailyForecast(data[0].Key);
+      getPastWeather(data[0].Key);
     })
     .catch((err) => {
       console.error(err);
@@ -35,15 +41,16 @@ async function getLocation() {
 }
 
 async function getCurrentWeather(key) {
-  const endpointForecast = `http://dataservice.accuweather.com/currentconditions/v1/${key}?apikey=${APIKey}&language=${language}`;
+  const endpointForecast = `${URL}currentconditions/v1/${key}?${basic}`;
 
   await getAPIRequest(endpointForecast)
     .then((data) => {
-      document.getElementById("time").innerHTML =
-        data[0].LocalObservationDateTime;
-      document.getElementById("temperature").innerHTML =
-        data[0].Temperature.Metric.Value;
-      getPastWeather(key);
+      const date = data[0].LocalObservationDateTime.split("T");
+      document.getElementById("date").innerHTML = date[0];
+      document.getElementById("time").innerHTML = date[1].split("+")[0];
+      document.getElementById(
+        "temperature"
+      ).innerHTML = `${data[0].Temperature.Metric.Value}&deg;C`;
     })
     .catch((err) => {
       console.error(err);
@@ -51,11 +58,17 @@ async function getCurrentWeather(key) {
 }
 
 async function getPastWeather(key) {
-  const endpoitPastForecast = `http://dataservice.accuweather.com/currentconditions/v1/${key}?apikey=${APIKey}&language=${language}`;
+  const endpoitPastForecast = `${URL}currentconditions/v1/${key}/historical/24?${basic}`;
 
   await getAPIRequest(endpoitPastForecast)
     .then((data) => {
-      getHourlyForecast(key);
+      console.log(data);
+      document.getElementById(
+        "past_image"
+      ).innerHTML = `<img src=${imageNameConstructor(data[23].WeatherIcon)}>`;
+      document.getElementById(
+        "past_temperature"
+      ).innerHTML = `${data[23].Temperature.Metric.Value}&deg;C`;
     })
     .catch((err) => {
       console.error(err);
@@ -63,7 +76,7 @@ async function getPastWeather(key) {
 }
 
 async function getHourlyForecast(locationKey) {
-  const endpointHourlyForecast = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${locationKey}?apikey=${APIKey}&language=${language}`;
+  const endpointHourlyForecast = `${URL}forecasts/v1/hourly/12hour/${locationKey}?${basic}`;
   await getAPIRequest(endpointHourlyForecast)
     .then((data) => {
       getDailyForecast(locationKey);
@@ -74,7 +87,7 @@ async function getHourlyForecast(locationKey) {
 }
 
 async function getDailyForecast(locationKey) {
-  const endpointDailyForecast = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${APIKey}&language=${language}&metric=${true}`;
+  const endpointDailyForecast = `${URL}forecasts/v1/daily/5day/${locationKey}?${basic}&metric=${true}`;
 
   await getAPIRequest(endpointDailyForecast)
     .then((data) => {
@@ -111,9 +124,7 @@ async function getDailyForecast(locationKey) {
             concreteData = concreteData[value];
           }
           if (property[1] == "Icon") {
-            concreteData =
-              concreteData < 10 ? `0${concreteData}` : `${concreteData}`;
-            let fileName = `./weather_icons/${concreteData}-s.png`;
+            imageNameConstructor(concreteData);
             tableData += `<td> <img src=${fileName}> </ td>\n`;
           } else {
             tableData += `<td> ${concreteData}&deg;C </ td>`;
@@ -123,6 +134,24 @@ async function getDailyForecast(locationKey) {
       });
 
       document.getElementById("temperatures").innerHTML = tableData;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+function imageNameConstructor(number) {
+  number = number < 10 ? `0${number}` : `${number}`;
+  let fileName = `./weather_icons/${number}-s.png`;
+  return fileName;
+}
+
+async function getAirCondition(key) {
+  const endpoitPastForecast = `${URL}indices/v1/daily/1day/${key}/-10?${basic}`;
+
+  await getAPIRequest(endpoitPastForecast)
+    .then((data) => {
+      document.getElementById("air_condition").innerHTML = data[0].Category;
     })
     .catch((err) => {
       console.error(err);
