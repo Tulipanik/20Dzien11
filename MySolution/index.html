@@ -7,38 +7,53 @@
     <title>Weather Cast</title>
   </head>
   <body>
-    <script type="module" src="./renderer.js"></script>
+    <script type="module" src="./javascript/renderer.js"></script>
     <h1>Weather Cast!</h1>
-    
-    <div>
-        <form id="form">
-          <div>
-          <label for="location">Write here interesting location</label> <br> 
-          <input id="location" />
-          <input type="submit" value="szukaj">
-          </div>
-        </form>
-        <div>
+
+    <form id="form">
+      <div>
+        <label for="location">Write here interesting location</label> <br />
+        <input id="location" />
+        <input type="submit" value="szukaj" />
+      </div>
+    </form>
+    <div id="page_content">
+      <div id="current">
+        <div id="col1">
           <h2>Day before (24 hours before)</h2>
           <div id="past_image"></div>
           <div>Temperature: <span id="past_temperature"></span></div>
         </div>
-      <div>
-        <div>Country: <span id="country"></span></div>
-        <div>Last measure time: <span id="date"></span> <span id="time"></span></div>
+        <div id="col2">
+          <h2>Info</h2>
+          <div>Country: <span id="country"></span></div>
+          <div>
+            Last measure time: <span id="date"></span> <span id="time"></span>
+          </div>
+        </div>
+        <div id="col3">
+          <h2>Current weather</h2>
+          <span id="weather_icon"></span>
+          <div>Temperature: <span id="temperature"></span></div>
+          <div>Air Condition: <span id="air_condition"></span></div>
+        </div>
       </div>
-      <div><span id="weather_icon"></span>
-      <div>
-        Temperature: <span id="temperature"></span>
+      <div id="table_1">
+        <h2>Hourly forecast</h2>
+        <table>
+          <thead id="hours"></thead>
+          <tbody id="hours_temperatures"></tbody>
+        </table>
       </div>
-      <div>Predictions:</div>
-      <div>Air Condition: <span id="air_condition"></span></div>
-      <table>
-        <thead id="week_days">
-        </thead>
-        <tbody id="temperatures">
-        </tbody>
-      </table>
+
+      <div id="table_2">
+        <h2>Daily forecast</h2>
+        <table>
+          <thead id="week_days"></thead>
+          <tbody id="temperatures"></tbody>
+        </table>
+      </div>
     </div>
+    <div id="error"></div>
   </body>
 </html>

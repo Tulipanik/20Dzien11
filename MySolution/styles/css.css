@@ -18,6 +18,18 @@ h1 {
   justify-content: center;
 }
 
+h2 {
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+img {
+  display: flex;
+  justify-content: center;
+}
+
 form {
   display: flex;
   justify-content: center;
@@ -45,11 +57,11 @@ input:focus {
 }
 
 table {
+  /* display: block; */ /* Remove this line */
   width: 100%;
   border: 2px solid white;
   border-collapse: collapse;
   justify-content: center;
-  bottom: 0;
 }
 
 thead {
@@ -61,6 +73,41 @@ td {
   padding: 10px;
 }
 
+#error {
+  display: none;
+  font-size: 4rem;
+  color: #ba4730;
+  justify-content: center;
+}
+
 #past_image {
-  width: 1000px;
+  width: 100%;
+}
+
+#current {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 1;
+}
+
+#current > :not(div:nth-last-child(1)) {
+  margin: 1%;
+  border-right: 2px solid white;
+}
+
+#col1 {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+#col2 {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+#col3 {
+  grid-row: 1;
+  grid-column: 3;
+  border-right: none;
 }
