@@ -39,7 +39,7 @@ async function getLocation() {
       getForecasts(data[0].Key);
     })
     .catch((err) => {
-      getError("Bad town");
+      getError();
       console.error(err);
     });
 }
