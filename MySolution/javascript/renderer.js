@@ -21,20 +21,22 @@ export async function getAPIRequest(endpoint) {
 
 form.addEventListener("submit", function (event) {
   event.preventDefault();
+
   document.getElementById("page_content").style.display = "block";
   document.getElementById("error").style.display = "none";
+
   getLocation();
 });
 
 async function getLocation() {
   const location = document.getElementById("location").value;
-
   const endpoint = `${URL}locations/v1/cities/search?${basic}&q=${location}`;
 
   await getAPIRequest(endpoint)
     .then((data) => {
       document.getElementById("country").innerHTML =
         data[0].Country.LocalizedName;
+
       getCurrentData(data[0].Key);
       getForecasts(data[0].Key);
     })
@@ -53,6 +55,7 @@ export function imageNameConstructor(number) {
 export function getError(name) {
   document.getElementById("page_content").style.display = "none";
   document.getElementById("error").style.display = "flex";
+
   if (name != undefined) {
     document.getElementById("error").innerHTML = name;
   } else {

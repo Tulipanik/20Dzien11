@@ -14,6 +14,7 @@ async function getCurrentWeather(key) {
   await getAPIRequest(endpointForecast)
     .then((data) => {
       const date = data[0].LocalObservationDateTime.split("T");
+
       document.getElementById("date").innerHTML = date[0];
       document.getElementById("time").innerHTML = date[1].split("+")[0];
       document.getElementById(
@@ -25,6 +26,7 @@ async function getCurrentWeather(key) {
     })
     .catch((err) => {
       getError();
+
       console.error(err);
     });
 }

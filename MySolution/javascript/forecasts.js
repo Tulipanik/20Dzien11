@@ -9,9 +9,11 @@ export async function getForecasts(locationKey) {
 
 async function getHourlyForecast(locationKey) {
   const endpointHourlyForecast = `${URL}forecasts/v1/hourly/12hour/${locationKey}?${basic}&metric=${true}`;
+
   await getAPIRequest(endpointHourlyForecast)
     .then((data) => {
       let Headers = "";
+
       for (const hours of data) {
         Headers += `<td>${
           hours.DateTime.split("T")[1].split("+")[0].split(":")[0]
@@ -48,6 +50,7 @@ async function getDailyForecast(locationKey) {
         "Saturday",
       ];
       const days = data.DailyForecasts;
+
       for (let i = 0; i < days.length; i++) {
         Headers +=
           "\t<td>" + daysOfWeek[new Date(days[i].Date).getDay()] + "</td> \n";
@@ -73,14 +76,18 @@ async function getDailyForecast(locationKey) {
 
 function createDataTable(data, properties) {
   let tableData = "";
+
   properties.forEach((property) => {
     tableData += "<tr>";
+
     for (let i = 0; i < data.length; i++) {
       let concreteData = data[i];
+
       for (const value of property) {
         concreteData = concreteData[value];
       }
       const last = property[property.length - 1];
+
       if (last == "Icon" || last == "WeatherIcon") {
         const fileName = imageNameConstructor(concreteData);
         tableData += `<td> <img src=${fileName}> </ td>\n`;
